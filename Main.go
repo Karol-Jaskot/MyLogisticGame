@@ -4,6 +4,7 @@ import (
 	"MyLogisticGame/api"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"net/http"
 )
 
 func main() {
@@ -14,14 +15,15 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// Route => handler
-	e.GET("/", api.HomeResponse)
+	e.GET("/", homeResponse)
 
-	// Locations
-	e.GET("/locations", api.GetAllLocations)
-	e.POST("/locations", api.CreateLocation)
-	e.GET("/locations/:id", api.GetLocation)
-	e.DELETE("/locations/:id", api.DeleteLocation)
+	api.CreateLocationsAPI(e)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":8080"))
+}
+
+func homeResponse(c echo.Context) error {
+	c.String(http.StatusOK, "Hello, World!")
+	return nil
 }

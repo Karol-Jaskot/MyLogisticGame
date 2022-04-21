@@ -8,17 +8,23 @@ import (
 	"strconv"
 )
 
-func HomeResponse(c echo.Context) error {
-	c.String(http.StatusOK, "Hello, World!")
-	return nil
+// CreateLocationsAPI ==========================================================
+func CreateLocationsAPI(e *echo.Echo) {
+	// Routes
+	e.GET("/locations", getLocations)
+	e.POST("/locations", createLocation)
+	e.GET("/locations/:id", getLocation)
+	e.DELETE("/locations/:id", deleteLocation)
 }
 
-func GetAllLocations(c echo.Context) error {
+// ==========================================================
+// Handlers
+func getLocations(c echo.Context) error {
 	encjson, _ := json.Marshal(entity.GetAllLocations())
 	return c.String(http.StatusOK, string(encjson))
 }
 
-func GetLocation(c echo.Context) error {
+func getLocation(c echo.Context) error {
 	i := c.Param("id")
 	id, _ := strconv.Atoi(i)
 	var loc = entity.GetLocationById(id)
@@ -26,14 +32,14 @@ func GetLocation(c echo.Context) error {
 	return c.String(http.StatusOK, string(encjson))
 }
 
-func CreateLocation(c echo.Context) error {
+func createLocation(c echo.Context) error {
 	var loc entity.Location
 	loc.Name = c.FormValue("name")
 	entity.SaveLocation(loc)
 	return c.JSON(http.StatusCreated, loc)
 }
 
-func DeleteLocation(c echo.Context) error {
+func deleteLocation(c echo.Context) error {
 	i := c.Param("id")
 	id, _ := strconv.Atoi(i)
 	entity.DeleteLocation(id)
