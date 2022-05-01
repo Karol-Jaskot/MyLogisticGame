@@ -43,7 +43,7 @@ func main() {
 	// Start server
 	e.Logger.Fatal(e.Start(":8080"))
 
-	//test
+	//test2
 }
 
 // HealthCheck godoc
