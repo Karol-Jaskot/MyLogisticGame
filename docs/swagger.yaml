@@ -97,6 +97,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/echo.HTTPError'
+        "405":
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
       summary: Create Company
       tags:
       - companies
@@ -122,12 +126,15 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/entity.Company'
-        "500":
-          description: Internal Server Error
+        "400":
+          description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
-      summary: Add Location To Company
+            $ref: '#/definitions/echo.HTTPError'
+        "405":
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Assign Location To Company
       tags:
       - companies
   /companies/{id}:
@@ -146,14 +153,16 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
+            type: string
+        "204":
+          description: No Content
           schema:
-            additionalProperties: true
-            type: object
-      summary: Delete Companies
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Delete Company
       tags:
       - companies
     get:
@@ -174,6 +183,10 @@ paths:
             $ref: '#/definitions/entity.Company'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "404":
+          description: Not Found
           schema:
             $ref: '#/definitions/echo.HTTPError'
       summary: Get Company
@@ -269,6 +282,10 @@ paths:
             $ref: '#/definitions/entity.Location'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "404":
+          description: Not Found
           schema:
             $ref: '#/definitions/echo.HTTPError'
       summary: Get Location

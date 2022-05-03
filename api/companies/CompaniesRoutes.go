@@ -13,5 +13,5 @@ func CreateCompaniesAPI(e *echo.Echo) {
 	e.GET("/companies/:id", getCompany)
 	e.DELETE("/companies/:id", deleteCompany)
 
-	e.POST("/companies/:company_id/locations/:location_id", companyAddLocation)
+	e.POST("/companies/:company_id/locations/:location_id", companyAssignLocation)
 }

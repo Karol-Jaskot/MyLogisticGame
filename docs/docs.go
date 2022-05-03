@@ -107,6 +107,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/echo.HTTPError"
                         }
+                    },
+                    "405": {
+                        "description": "Method Not Allowed",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
                     }
                 }
             }
@@ -122,7 +128,7 @@ const docTemplate = `{
                 "tags": [
                     "companies"
                 ],
-                "summary": "Add Location To Company",
+                "summary": "Assign Location To Company",
                 "parameters": [
                     {
                         "type": "integer",
@@ -146,11 +152,16 @@ const docTemplate = `{
                             "$ref": "#/definitions/entity.Company"
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "405": {
+                        "description": "Method Not Allowed",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
                         }
                     }
                 }
@@ -189,6 +200,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/echo.HTTPError"
                         }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
                     }
                 }
             },
@@ -202,7 +219,7 @@ const docTemplate = `{
                 "tags": [
                     "companies"
                 ],
-                "summary": "Delete Companies",
+                "summary": "Delete Company",
                 "parameters": [
                     {
                         "type": "integer",
@@ -216,15 +233,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "type": "string"
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
                         }
                     }
                 }
@@ -328,6 +349,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/echo.HTTPError"
                         }

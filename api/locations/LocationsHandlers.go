@@ -32,6 +32,7 @@ func getLocations(c echo.Context) error {
 // @Param id path int true "ID"
 // @Success 200 {object} entity.Location
 // @failure 400 {object} echo.HTTPError
+// @failure 404 {object} echo.HTTPError
 // @Router /locations/{id} [get]
 func getLocation(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
@@ -41,6 +42,11 @@ func getLocation(c echo.Context) error {
 
 	var loc entity.Location
 	conn.First(&loc, id)
+
+	if loc.ID == 0 {
+		return echo.NewHTTPError(http.StatusNotFound, "Location with ID %d not exist", id)
+	}
+
 	return c.JSON(http.StatusOK, loc)
 }
 
@@ -70,7 +76,7 @@ func createLocation(c echo.Context) error {
 		var com entity.Company
 		conn.First(&com, loc.CompanyRefer)
 		if com.ID == 0 {
-			return c.String(http.StatusMethodNotAllowed, fmt.Sprintf("Company with id %d not exist", loc.CompanyRefer))
+			return c.String(http.StatusMethodNotAllowed, fmt.Sprintf("Company with ID %d not exist", loc.CompanyRefer))
 		}
 	}
 
@@ -98,11 +104,11 @@ func deleteLocation(c echo.Context) error {
 	conn.First(&loc, id)
 
 	if loc.ID == 0 {
-		return c.String(http.StatusNoContent, fmt.Sprintf("Location with id %d not exist", id))
+		return c.String(http.StatusNoContent, fmt.Sprintf("Location with ID %d not exist", id))
 	} else if loc.CompanyRefer != 0 {
-		return c.String(http.StatusMethodNotAllowed, fmt.Sprintf("Location with id %d is assing to company with id %d", id, loc.CompanyRefer))
+		return c.String(http.StatusMethodNotAllowed, fmt.Sprintf("Location with ID %d is assing to company with ID %d", id, loc.CompanyRefer))
 	} else {
 		conn.Delete(loc)
-		return c.String(http.StatusOK, fmt.Sprintf("Deleted location with id: %d", id))
+		return c.String(http.StatusOK, fmt.Sprintf("Deleted location with ID: %d", id))
 	}
 }
