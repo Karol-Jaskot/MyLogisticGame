@@ -17,7 +17,6 @@ var conn = configs.GetConnection()
 // @Accept */*
 // @Produce json
 // @Success 200 {object} []entity.Company
-// @failure 500 {object} map[string]interface{}
 // @Router /companies [get]
 func getCompanies(c echo.Context) error {
 	var companies []entity.Company
@@ -32,11 +31,14 @@ func getCompanies(c echo.Context) error {
 // @Produce json
 // @Param id path int true "ID"
 // @Success 200 {object} entity.Company
-// @failure 500 {object} map[string]interface{}
+// @failure 400 {object} echo.HTTPError
 // @Router /companies/{id} [get]
 func getCompany(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
-	api.CheckErr(err)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
 	var com entity.Company
 	conn.First(&com, id)
 	return c.JSON(http.StatusOK, com)
@@ -49,12 +51,15 @@ func getCompany(c echo.Context) error {
 // @Produce json
 // @Param company body entity.Company  true  "Add company"
 // @Success 201 {object} entity.Company
-// @failure 500 {object} map[string]interface{}
+// @failure 400 {object} echo.HTTPError
 // @Router /companies [post]
 func createCompany(c echo.Context) error {
 	var com entity.Company
 	err := c.Bind(&com)
-	api.CheckErr(err)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
 	conn.Create(&com)
 	return c.JSON(http.StatusCreated, com)
 }

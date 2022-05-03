@@ -1,7 +1,6 @@
 package locations
 
 import (
-	"MyLogisticGame/api"
 	"MyLogisticGame/configs"
 	"MyLogisticGame/entity"
 	"fmt"
@@ -18,7 +17,6 @@ var conn = configs.GetConnection()
 // @Accept */*
 // @Produce json
 // @Success 200 {object} []entity.Location
-// @failure 500 {object} map[string]interface{}
 // @Router /locations [get]
 func getLocations(c echo.Context) error {
 	var locations []entity.Location
@@ -33,29 +31,49 @@ func getLocations(c echo.Context) error {
 // @Produce json
 // @Param id path int true "ID"
 // @Success 200 {object} entity.Location
-// @failure 500 {string}  string    "ERROR"
+// @failure 400 {object} echo.HTTPError
 // @Router /locations/{id} [get]
 func getLocation(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
-	api.CheckErr(err)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
 	var loc entity.Location
 	conn.First(&loc, id)
 	return c.JSON(http.StatusOK, loc)
 }
 
-// GetLocations godoc
-// @Summary Get Locations
+// CreateLocation godoc
+// @Summary Create Location
 // @Tags locations
 // @Accept json
 // @Produce json
 // @Param location body entity.Location true "Add location"
-// @Success 200 {object} entity.Location
-// @failure 500 {object} map[string]interface{}
+// @Success 201 {object} entity.Location
+// @failure 400 {object} echo.HTTPError
+// @failure 405 {object} echo.HTTPError
 // @Router /locations [post]
 func createLocation(c echo.Context) error {
 	var loc entity.Location
+
 	err := c.Bind(&loc)
-	api.CheckErr(err)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
+	// Reset ID if exist
+	loc.ID = 0
+
+	// Check the company if it is set
+	if loc.CompanyRefer != 0 {
+		var com entity.Company
+		conn.First(&com, loc.CompanyRefer)
+		if com.ID == 0 {
+			return c.String(http.StatusMethodNotAllowed, fmt.Sprintf("Company with id %d not exist", loc.CompanyRefer))
+		}
+	}
+
 	conn.Create(&loc)
 	return c.JSON(http.StatusCreated, loc)
 }
@@ -73,15 +91,18 @@ func createLocation(c echo.Context) error {
 func deleteLocation(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return echo.NewHTTPError(http.StatusMethodNotAllowed, err)
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	var count int
-	conn.Raw("SELECT count(1) FROM locations WHERE id = ?", id).Scan(&count)
+	var loc entity.Location
+	conn.First(&loc, id)
 
-	if count > 0 {
-		return c.String(http.StatusOK, fmt.Sprintf("Deleted location with id: %d", id))
+	if loc.ID == 0 {
+		return c.String(http.StatusNoContent, fmt.Sprintf("Location with id %d not exist", id))
+	} else if loc.CompanyRefer != 0 {
+		return c.String(http.StatusMethodNotAllowed, fmt.Sprintf("Location with id %d is assing to company with id %d", id, loc.CompanyRefer))
 	} else {
-		return c.String(http.StatusOK, fmt.Sprintf("Location with id %d not exist", id))
+		conn.Delete(loc)
+		return c.String(http.StatusOK, fmt.Sprintf("Deleted location with id: %d", id))
 	}
 }

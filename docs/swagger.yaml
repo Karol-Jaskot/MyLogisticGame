@@ -73,11 +73,6 @@ paths:
             items:
               $ref: '#/definitions/entity.Company'
             type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
       summary: Get Companies
       tags:
       - companies
@@ -98,11 +93,10 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/entity.Company'
-        "500":
-          description: Internal Server Error
+        "400":
+          description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/echo.HTTPError'
       summary: Create Company
       tags:
       - companies
@@ -178,11 +172,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/entity.Company'
-        "500":
-          description: Internal Server Error
+        "400":
+          description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/echo.HTTPError'
       summary: Get Company
       tags:
       - companies
@@ -199,11 +192,6 @@ paths:
             items:
               $ref: '#/definitions/entity.Location'
             type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
       summary: Get Locations
       tags:
       - locations
@@ -220,16 +208,19 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/entity.Location'
-        "500":
-          description: Internal Server Error
+        "400":
+          description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
-      summary: Get Locations
+            $ref: '#/definitions/echo.HTTPError'
+        "405":
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Create Location
       tags:
       - locations
   /locations/{id}:
@@ -276,10 +267,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/entity.Location'
-        "500":
-          description: ERROR
+        "400":
+          description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/echo.HTTPError'
       summary: Get Location
       tags:
       - locations

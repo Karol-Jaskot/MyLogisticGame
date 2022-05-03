@@ -70,13 +70,6 @@ const docTemplate = `{
                                 "$ref": "#/definitions/entity.Company"
                             }
                         }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
                     }
                 }
             },
@@ -109,11 +102,10 @@ const docTemplate = `{
                             "$ref": "#/definitions/entity.Company"
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/echo.HTTPError"
                         }
                     }
                 }
@@ -192,11 +184,10 @@ const docTemplate = `{
                             "$ref": "#/definitions/entity.Company"
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/echo.HTTPError"
                         }
                     }
                 }
@@ -260,13 +251,6 @@ const docTemplate = `{
                                 "$ref": "#/definitions/entity.Location"
                             }
                         }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
                     }
                 }
             },
@@ -280,7 +264,7 @@ const docTemplate = `{
                 "tags": [
                     "locations"
                 ],
-                "summary": "Get Locations",
+                "summary": "Create Location",
                 "parameters": [
                     {
                         "description": "Add location",
@@ -293,17 +277,22 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/entity.Location"
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "405": {
+                        "description": "Method Not Allowed",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
                         }
                     }
                 }
@@ -337,10 +326,10 @@ const docTemplate = `{
                             "$ref": "#/definitions/entity.Location"
                         }
                     },
-                    "500": {
-                        "description": "ERROR",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/echo.HTTPError"
                         }
                     }
                 }
