@@ -44,7 +44,7 @@ func getLocation(c echo.Context) error {
 	conn.First(&loc, id)
 
 	if loc.ID == 0 {
-		return echo.NewHTTPError(http.StatusNotFound, "Location with ID %d not exist", id)
+		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("Location with ID %d not exist", id))
 	}
 
 	return c.JSON(http.StatusOK, loc)

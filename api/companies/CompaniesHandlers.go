@@ -44,7 +44,7 @@ func getCompany(c echo.Context) error {
 	conn.First(&com, id)
 
 	if com.ID == 0 {
-		return echo.NewHTTPError(http.StatusNotFound, "Company with ID %d not exist", id)
+		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("Company with ID %d not exist", id))
 	}
 
 	return c.JSON(http.StatusOK, com)
