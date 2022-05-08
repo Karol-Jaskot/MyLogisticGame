@@ -20,8 +20,8 @@ http://www.karol-jaskot.pl:8081/swagger/index.html
 ### Tech
 
 * GO
-* Echo
-* GORM
+* <a href="https://echo.labstack.com/" target="_blank">Echo</a>
+* <a href="https://gorm.io/index.html" target="_blank">GORM</a>
 * Docker
 
 ### Installation
