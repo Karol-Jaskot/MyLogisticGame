@@ -34,7 +34,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// Route => handler
-	e.GET("/*", HealthCheck)
+	e.GET("/*", healthCheck)
 
 	locations.CreateLocationsAPI(e)
 	companies.CreateCompaniesAPI(e)
@@ -43,8 +43,6 @@ func main() {
 
 	// Start server
 	e.Logger.Fatal(e.Start(":" + configs.ApiPort))
-
-	//test2
 }
 
 // HealthCheck godoc
@@ -55,7 +53,7 @@ func main() {
 // @Produce json
 // @Success 200 {object} map[string]interface{}
 // @Router / [get]
-func HealthCheck(c echo.Context) error {
+func healthCheck(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"data": "Server is up and running",
 	})

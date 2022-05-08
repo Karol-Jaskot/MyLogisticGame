@@ -7,19 +7,23 @@ import (
 	"os"
 )
 
-func GetConnection() *gorm.DB {
-	filename := "./database/MainDB.db"
+var FileName = "database/MainDB.db"
 
-	if _, err := os.Stat(filename); errors.Is(err, os.ErrNotExist) {
+func GetConnection() *gorm.DB {
+	if _, err := os.Stat(FileName); errors.Is(err, os.ErrNotExist) {
 		os.MkdirAll("./database", 0755)
-		os.Create(filename)
+		os.Create(FileName)
 	} else {
 		// file exists
 	}
 
-	db, err := gorm.Open(sqlite.Open("database/MainDB.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(FileName), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 	return db
+}
+
+func SetTstConnection() {
+	FileName = "database/MainDB_tst.db"
 }
