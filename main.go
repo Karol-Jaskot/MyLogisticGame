@@ -3,6 +3,7 @@ package main
 import (
 	"MyLogisticGame/api/companies"
 	"MyLogisticGame/api/locations"
+	"MyLogisticGame/configs"
 	_ "MyLogisticGame/docs"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -41,7 +42,7 @@ func main() {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	// Start server
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":" + configs.ApiPort))
 
 	//test2
 }
