@@ -3,6 +3,7 @@ package main
 import (
 	"MyLogisticGame/api/companies"
 	"MyLogisticGame/api/locations"
+	"MyLogisticGame/api/materials"
 	"MyLogisticGame/configs"
 	_ "MyLogisticGame/docs"
 	"github.com/labstack/echo/v4"
@@ -14,7 +15,7 @@ import (
 
 // @title Echo Swagger Example API
 // @version 1.0
-// @description This is a sample server server.
+// @description This is my simple game with api.
 // @termsOfService http://swagger.io/terms/
 
 // @contact.name API Support
@@ -38,6 +39,7 @@ func main() {
 
 	locations.CreateLocationsAPI(e)
 	companies.CreateCompaniesAPI(e)
+	materials.CreateMaterialsAPI(e)
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
