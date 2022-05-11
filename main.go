@@ -4,6 +4,7 @@ import (
 	"MyLogisticGame/api/companies"
 	"MyLogisticGame/api/locations"
 	"MyLogisticGame/api/materials"
+	"MyLogisticGame/api/vehicles"
 	"MyLogisticGame/configs"
 	_ "MyLogisticGame/docs"
 	"github.com/labstack/echo/v4"
@@ -40,6 +41,7 @@ func main() {
 	locations.CreateLocationsAPI(e)
 	companies.CreateCompaniesAPI(e)
 	materials.CreateMaterialsAPI(e)
+	vehicles.CreateVehiclesAPI(e)
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 

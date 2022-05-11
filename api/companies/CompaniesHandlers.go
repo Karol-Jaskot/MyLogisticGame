@@ -170,3 +170,54 @@ func companyAssignLocation(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, com)
 }
+
+// RemoveLocationFromCompany godoc
+// @Summary Remove location from company
+// @Tags companies
+// @Accept */*
+// @Produce json
+// @Param companyId path int true "Company ID"
+// @Param locationId path int true "Location ID"
+// @Success 200 {object} entity.Company
+// @failure 400 {object} echo.HTTPError
+// @failure 405 {object} echo.HTTPError
+// @Router /companies/{companyId}/locations/{locationId} [delete]
+func companyRemoveLocation(c echo.Context) error {
+	companyId, err := strconv.Atoi(c.Param("company_id"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
+	locationId, err := strconv.Atoi(c.Param("location_id"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
+	if companyId == 0 || locationId == 0 {
+		return c.String(http.StatusMethodNotAllowed, fmt.Sprintf("Company or location ID cannot be 0"))
+	}
+
+	// Get and check location
+	var loc entity.Location
+	conn.First(&loc, locationId)
+	if loc.ID == 0 {
+		return c.String(http.StatusMethodNotAllowed, fmt.Sprintf("Location with ID %d not exist", locationId))
+	} else if loc.CompanyRefer != 0 && (int(loc.CompanyRefer)) != companyId {
+		return c.String(http.StatusMethodNotAllowed, fmt.Sprintf("This location is assign to other company"))
+	} else if loc.CompanyRefer == 0 {
+		return c.String(http.StatusMethodNotAllowed, fmt.Sprintf("This location is assign to other company"))
+	}
+
+	// Get and check company
+	var com entity.Company
+	conn.Preload("Locations").First(&com, companyId)
+	if com.ID == 0 {
+		return c.String(http.StatusMethodNotAllowed, fmt.Sprintf("Company with ID %d not exist", companyId))
+	}
+
+	loc.CompanyRefer = 0
+	conn.Save(loc)
+
+	conn.Preload("Locations").First(&com, companyId)
+	return c.JSON(http.StatusOK, com)
+}
