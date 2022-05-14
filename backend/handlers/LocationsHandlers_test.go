@@ -1,6 +1,7 @@
-package locations
+package handlers
 
 import (
+	"MyLogisticGame/backend/routes"
 	"MyLogisticGame/configs"
 	"MyLogisticGame/entity"
 	"encoding/json"
@@ -18,7 +19,7 @@ func setupTest() {
 	// Setup
 	e = echo.New()
 	configs.SetTstConnection()
-	CreateLocationsAPI(e)
+	routes.CreateLocationsAPI(e)
 
 	defer e.Close()
 }
@@ -40,7 +41,7 @@ func TestCreateLocation(t *testing.T) {
 	c := e.NewContext(req, rec)
 
 	// Assertions
-	if assert.NoError(t, createLocation(c)) {
+	if assert.NoError(t, CreateLocation(c)) {
 		assert.Equal(t, http.StatusCreated, rec.Code)
 	}
 }

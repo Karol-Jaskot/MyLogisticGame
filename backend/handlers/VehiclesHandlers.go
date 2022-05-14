@@ -1,15 +1,12 @@
-package vehicles
+package handlers
 
 import (
-	"MyLogisticGame/configs"
-	"MyLogisticGame/entity"
+	"MyLogisticGame/backend/entity"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
 )
-
-var conn = configs.GetConnection()
 
 // GetVehicles godoc
 // @Summary Get Vehicles
@@ -18,9 +15,9 @@ var conn = configs.GetConnection()
 // @Produce json
 // @Success 200 {object} []entity.Vehicle
 // @Router /vehicles [get]
-func getVehicles(c echo.Context) error {
+func GetVehicles(c echo.Context) error {
 	var vehicles []entity.Vehicle
-	conn.Find(&vehicles)
+	Conn.Find(&vehicles)
 	return c.JSON(http.StatusOK, vehicles)
 }
 
@@ -33,7 +30,7 @@ func getVehicles(c echo.Context) error {
 // @Success 201 {object} entity.Vehicle
 // @failure 400 {object} echo.HTTPError
 // @Router /vehicles [post]
-func createVehicle(c echo.Context) error {
+func CreateVehicle(c echo.Context) error {
 	var veh entity.Vehicle
 
 	err := c.Bind(&veh)
@@ -44,7 +41,7 @@ func createVehicle(c echo.Context) error {
 	// Reset ID if exist
 	veh.ID = 0
 
-	conn.Create(&veh)
+	Conn.Create(&veh)
 	return c.JSON(http.StatusCreated, veh)
 }
 
@@ -58,14 +55,14 @@ func createVehicle(c echo.Context) error {
 // @failure 400 {object} echo.HTTPError
 // @failure 404 {object} echo.HTTPError
 // @Router /vehicles/{id} [get]
-func getVehicle(c echo.Context) error {
+func GetVehicle(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
 	var veh entity.Vehicle
-	conn.First(&veh, id)
+	Conn.First(&veh, id)
 
 	if veh.ID == 0 {
 		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("Vehicle with ID %d not exist", id))
@@ -84,19 +81,19 @@ func getVehicle(c echo.Context) error {
 // @Success 204 {string} string
 // @failure 405 {object} echo.HTTPError
 // @Router /vehicles/{id} [delete]
-func deleteVehicle(c echo.Context) error {
+func DeleteVehicle(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
 	var veh entity.Vehicle
-	conn.First(&veh, id)
+	Conn.First(&veh, id)
 
 	if veh.ID == 0 {
 		return c.String(http.StatusNoContent, fmt.Sprintf("Vehicle with ID %d not exist", id))
 	} else {
-		conn.Delete(veh)
+		Conn.Delete(veh)
 		return c.String(http.StatusOK, fmt.Sprintf("Deleted vehicle with ID: %d", id))
 	}
 }

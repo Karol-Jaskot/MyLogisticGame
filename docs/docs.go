@@ -857,7 +857,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/",
 	Schemes:          []string{"http"},
 	Title:            "Echo Swagger Example API",
-	Description:      "This is my simple game with api.",
+	Description:      "This is my simple game with backend.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

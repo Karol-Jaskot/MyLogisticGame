@@ -4,7 +4,7 @@
     ],
     "swagger": "2.0",
     "info": {
-        "description": "This is my simple game with api.",
+        "description": "This is my simple game with backend.",
         "title": "Echo Swagger Example API",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {

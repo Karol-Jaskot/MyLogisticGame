@@ -1,15 +1,12 @@
-package locations
+package handlers
 
 import (
-	"MyLogisticGame/configs"
-	"MyLogisticGame/entity"
+	"MyLogisticGame/backend/entity"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
 )
-
-var conn = configs.GetConnection()
 
 // GetLocations godoc
 // @Summary Get Locations
@@ -18,9 +15,9 @@ var conn = configs.GetConnection()
 // @Produce json
 // @Success 200 {object} []entity.Location
 // @Router /locations [get]
-func getLocations(c echo.Context) error {
+func GetLocations(c echo.Context) error {
 	var locations []entity.Location
-	conn.Find(&locations)
+	Conn.Find(&locations)
 	return c.JSON(http.StatusOK, locations)
 }
 
@@ -34,14 +31,14 @@ func getLocations(c echo.Context) error {
 // @failure 400 {object} echo.HTTPError
 // @failure 404 {object} echo.HTTPError
 // @Router /locations/{id} [get]
-func getLocation(c echo.Context) error {
+func GetLocation(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
 	var loc entity.Location
-	conn.First(&loc, id)
+	Conn.First(&loc, id)
 
 	if loc.ID == 0 {
 		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("Location with ID %d not exist", id))
@@ -60,7 +57,7 @@ func getLocation(c echo.Context) error {
 // @failure 400 {object} echo.HTTPError
 // @failure 405 {object} echo.HTTPError
 // @Router /locations [post]
-func createLocation(c echo.Context) error {
+func CreateLocation(c echo.Context) error {
 	var loc entity.Location
 
 	err := c.Bind(&loc)
@@ -74,13 +71,13 @@ func createLocation(c echo.Context) error {
 	// Check the company if it is set
 	if loc.CompanyRefer != 0 {
 		var com entity.Company
-		conn.First(&com, loc.CompanyRefer)
+		Conn.First(&com, loc.CompanyRefer)
 		if com.ID == 0 {
 			return c.String(http.StatusMethodNotAllowed, fmt.Sprintf("Company with ID %d not exist", loc.CompanyRefer))
 		}
 	}
 
-	conn.Create(&loc)
+	Conn.Create(&loc)
 	return c.JSON(http.StatusCreated, loc)
 }
 
@@ -94,21 +91,21 @@ func createLocation(c echo.Context) error {
 // @Success 204 {string} string
 // @failure 405 {object} echo.HTTPError
 // @Router /locations/{id} [delete]
-func deleteLocation(c echo.Context) error {
+func DeleteLocation(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
 	var loc entity.Location
-	conn.First(&loc, id)
+	Conn.First(&loc, id)
 
 	if loc.ID == 0 {
 		return c.String(http.StatusNoContent, fmt.Sprintf("Location with ID %d not exist", id))
 	} else if loc.CompanyRefer != 0 {
 		return c.String(http.StatusMethodNotAllowed, fmt.Sprintf("Location with ID %d is assing to company with ID %d", id, loc.CompanyRefer))
 	} else {
-		conn.Delete(loc)
+		Conn.Delete(loc)
 		return c.String(http.StatusOK, fmt.Sprintf("Deleted location with ID: %d", id))
 	}
 }
