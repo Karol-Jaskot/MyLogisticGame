@@ -1,15 +1,12 @@
-package materials
+package handlers
 
 import (
-	"MyLogisticGame/configs"
-	"MyLogisticGame/entity"
+	"MyLogisticGame/backend/entity"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
 )
-
-var conn = configs.GetConnection()
 
 // GetMaterials godoc
 // @Summary Get Materials
@@ -18,9 +15,9 @@ var conn = configs.GetConnection()
 // @Produce json
 // @Success 200 {object} []entity.Material
 // @Router /materials [get]
-func getMaterials(c echo.Context) error {
+func GetMaterials(c echo.Context) error {
 	var materials []entity.Material
-	conn.Find(&materials)
+	Conn.Find(&materials)
 	return c.JSON(http.StatusOK, materials)
 }
 
@@ -33,7 +30,7 @@ func getMaterials(c echo.Context) error {
 // @Success 201 {object} entity.Material
 // @failure 400 {object} echo.HTTPError
 // @Router /materials [post]
-func createMaterial(c echo.Context) error {
+func CreateMaterial(c echo.Context) error {
 	var mat entity.Material
 
 	err := c.Bind(&mat)
@@ -44,7 +41,7 @@ func createMaterial(c echo.Context) error {
 	// Reset ID if exist
 	mat.ID = 0
 
-	conn.Create(&mat)
+	Conn.Create(&mat)
 	return c.JSON(http.StatusCreated, mat)
 }
 
@@ -58,14 +55,14 @@ func createMaterial(c echo.Context) error {
 // @failure 400 {object} echo.HTTPError
 // @failure 404 {object} echo.HTTPError
 // @Router /materials/{id} [get]
-func getMaterial(c echo.Context) error {
+func GetMaterial(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
 	var mat entity.Material
-	conn.First(&mat, id)
+	Conn.First(&mat, id)
 
 	if mat.ID == 0 {
 		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("Material with ID %d not exist", id))
@@ -84,19 +81,19 @@ func getMaterial(c echo.Context) error {
 // @Success 204 {string} string
 // @failure 405 {object} echo.HTTPError
 // @Router /materials/{id} [delete]
-func deleteMaterial(c echo.Context) error {
+func DeleteMaterial(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
 	var mat entity.Material
-	conn.First(&mat, id)
+	Conn.First(&mat, id)
 
 	if mat.ID == 0 {
 		return c.String(http.StatusNoContent, fmt.Sprintf("Material with ID %d not exist", id))
 	} else {
-		conn.Delete(mat)
+		Conn.Delete(mat)
 		return c.String(http.StatusOK, fmt.Sprintf("Deleted material with ID: %d", id))
 	}
 }
