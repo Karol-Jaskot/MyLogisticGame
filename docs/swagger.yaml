@@ -30,12 +30,27 @@ definitions:
         type: integer
       materials:
         items:
-          $ref: '#/definitions/entity.Material'
+          $ref: '#/definitions/materials.Material'
         type: array
       name:
         type: string
     type: object
-  entity.Material:
+  entity.Vehicle:
+    properties:
+      id:
+        type: integer
+      materials:
+        items:
+          $ref: '#/definitions/materials.Material'
+        type: array
+      name:
+        type: string
+      purchasePrice:
+        type: integer
+      type:
+        type: string
+    type: object
+  materials.Material:
     properties:
       codeType:
         type: string
@@ -51,21 +66,6 @@ definitions:
         type: integer
       vehicleRefer:
         type: integer
-    type: object
-  entity.Vehicle:
-    properties:
-      id:
-        type: integer
-      materials:
-        items:
-          $ref: '#/definitions/entity.Material'
-        type: array
-      name:
-        type: string
-      purchasePrice:
-        type: integer
-      type:
-        type: string
     type: object
 info:
   contact:
@@ -370,8 +370,12 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entity.Material'
+              $ref: '#/definitions/materials.Material'
             type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
       summary: Get Materials
       tags:
       - materials
@@ -384,16 +388,20 @@ paths:
         name: Material
         required: true
         schema:
-          $ref: '#/definitions/entity.Material'
+          $ref: '#/definitions/materials.Material'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/entity.Material'
+            $ref: '#/definitions/materials.Material'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/echo.HTTPError'
       summary: Create Material
@@ -412,16 +420,16 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
-          schema:
-            type: string
         "204":
           description: No Content
           schema:
             type: string
         "405":
           description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/echo.HTTPError'
       summary: Delete material
@@ -442,13 +450,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.Material'
+            $ref: '#/definitions/materials.Material'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/echo.HTTPError'
         "404":
           description: Not Found
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/echo.HTTPError'
       summary: Get Material
