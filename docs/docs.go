@@ -469,8 +469,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entity.Material"
+                                "$ref": "#/definitions/materials.Material"
                             }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
                         }
                     }
                 }
@@ -493,7 +499,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.Material"
+                            "$ref": "#/definitions/materials.Material"
                         }
                     }
                 ],
@@ -501,11 +507,17 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/entity.Material"
+                            "$ref": "#/definitions/materials.Material"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/echo.HTTPError"
                         }
@@ -538,7 +550,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Material"
+                            "$ref": "#/definitions/materials.Material"
                         }
                     },
                     "400": {
@@ -549,6 +561,12 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/echo.HTTPError"
                         }
@@ -576,12 +594,6 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     "204": {
                         "description": "No Content",
                         "schema": {
@@ -590,6 +602,12 @@ const docTemplate = `{
                     },
                     "405": {
                         "description": "Method Not Allowed",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/echo.HTTPError"
                         }
@@ -790,7 +808,7 @@ const docTemplate = `{
                 "materials": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.Material"
+                        "$ref": "#/definitions/materials.Material"
                     }
                 },
                 "name": {
@@ -798,7 +816,30 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.Material": {
+        "entity.Vehicle": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "materials": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/materials.Material"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "purchasePrice": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "materials.Material": {
             "type": "object",
             "properties": {
                 "codeType": {
@@ -821,29 +862,6 @@ const docTemplate = `{
                 },
                 "vehicleRefer": {
                     "type": "integer"
-                }
-            }
-        },
-        "entity.Vehicle": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "materials": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Material"
-                    }
-                },
-                "name": {
-                    "type": "string"
-                },
-                "purchasePrice": {
-                    "type": "integer"
-                },
-                "type": {
-                    "type": "string"
                 }
             }
         }

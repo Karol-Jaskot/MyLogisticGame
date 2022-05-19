@@ -1,9 +1,9 @@
 package handlers
 
 import (
+	"MyLogisticGame/backend/entity"
 	"MyLogisticGame/backend/routes"
 	"MyLogisticGame/configs"
-	"MyLogisticGame/entity"
 	"encoding/json"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"

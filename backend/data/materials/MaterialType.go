@@ -1,4 +1,4 @@
-package entity
+package materials
 
 // Material model info
 type Material struct {

@@ -1,13 +1,13 @@
 package routes
 
 import (
-	"MyLogisticGame/backend/entity"
+	"MyLogisticGame/backend/data/materials"
 	"MyLogisticGame/backend/handlers"
 	"github.com/labstack/echo/v4"
 )
 
 func CreateMaterialsAPI(e *echo.Echo) {
-	handlers.Conn.AutoMigrate(&entity.Material{})
+	handlers.Conn.AutoMigrate(&materials.Material{})
 
 	e.GET("/materials", handlers.GetMaterials)
 	e.POST("/materials", handlers.CreateMaterial)

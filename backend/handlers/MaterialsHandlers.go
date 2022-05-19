@@ -1,11 +1,9 @@
 package handlers
 
 import (
-	"MyLogisticGame/backend/entity"
-	"fmt"
+	"MyLogisticGame/backend/data/materials"
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"strconv"
 )
 
 // GetMaterials godoc
@@ -13,12 +11,15 @@ import (
 // @Tags materials
 // @Accept */*
 // @Produce json
-// @Success 200 {object} []entity.Material
+// @Success 200 {object} []materials.Material
+// @failure 500 {object} echo.HTTPError
 // @Router /materials [get]
 func GetMaterials(c echo.Context) error {
-	var materials []entity.Material
-	Conn.Find(&materials)
-	return c.JSON(http.StatusOK, materials)
+	mat, err := materials.GetAll()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusOK, mat)
 }
 
 // CreateMaterial godoc
@@ -26,22 +27,22 @@ func GetMaterials(c echo.Context) error {
 // @Tags materials
 // @Accept json
 // @Produce json
-// @Param Material body entity.Material true "Add material"
-// @Success 201 {object} entity.Material
+// @Param Material body materials.Material true "Add material"
+// @Success 201 {object} materials.Material
 // @failure 400 {object} echo.HTTPError
+// @failure 500 {object} echo.HTTPError
 // @Router /materials [post]
 func CreateMaterial(c echo.Context) error {
-	var mat entity.Material
-
-	err := c.Bind(&mat)
+	mat, err := materials.CreateFromContext(c)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	// Reset ID if exist
-	mat.ID = 0
+	err = materials.Save(mat)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
 
-	Conn.Create(&mat)
 	return c.JSON(http.StatusCreated, mat)
 }
 
@@ -51,21 +52,20 @@ func CreateMaterial(c echo.Context) error {
 // @Accept */*
 // @Produce json
 // @Param id path int true "ID"
-// @Success 200 {object} entity.Material
+// @Success 200 {object} materials.Material
 // @failure 400 {object} echo.HTTPError
 // @failure 404 {object} echo.HTTPError
+// @failure 500 {object} echo.HTTPError
 // @Router /materials/{id} [get]
 func GetMaterial(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := ParseIdFromContext(c)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	var mat entity.Material
-	Conn.First(&mat, id)
-
-	if mat.ID == 0 {
-		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("Material with ID %d not exist", id))
+	mat, err := materials.GetById(id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
 	return c.JSON(http.StatusOK, mat)
@@ -77,23 +77,25 @@ func GetMaterial(c echo.Context) error {
 // @Accept */*
 // @Produce json
 // @Param id path int true "ID"
-// @Success 200 {string} string
 // @Success 204 {string} string
 // @failure 405 {object} echo.HTTPError
+// @failure 500 {object} echo.HTTPError
 // @Router /materials/{id} [delete]
 func DeleteMaterial(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := ParseIdFromContext(c)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	var mat entity.Material
-	Conn.First(&mat, id)
-
-	if mat.ID == 0 {
-		return c.String(http.StatusNoContent, fmt.Sprintf("Material with ID %d not exist", id))
-	} else {
-		Conn.Delete(mat)
-		return c.String(http.StatusOK, fmt.Sprintf("Deleted material with ID: %d", id))
+	mat, err := materials.GetById(id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
+
+	err = materials.Delete(mat)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusNoContent, nil)
 }
